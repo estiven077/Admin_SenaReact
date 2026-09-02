@@ -1,0 +1,16 @@
+/* Estilos específicos y personalizados para el Footer */
+.footer-custom {
+  background-color: #39a900; /* Verde SENA */
+  color: #ffffff;
+  padding: 1.5rem 0;
+  margin-top: auto; /* Mantiene el footer abajo */
+}
+
+.footer-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
