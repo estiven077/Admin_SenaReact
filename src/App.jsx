@@ -1,122 +1,100 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer/Footer';
+import Home from './pages/Home/Home';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Importaciones de Apprentice
+import ApprenticeIndex from './pages/Apprentice/index';
+import ApprenticeCreate from './pages/Apprentice/Create';
+import ApprenticeEdit from './pages/Apprentice/Edit';
+import ApprenticeShow from './pages/Apprentice/Show';
 
+// Importaciones de Area
+import AreaIndex from './pages/Area/index';
+import AreaCreate from './pages/Area/Create';
+import AreaEdit from './pages/Area/Edit';
+import AreaShow from './pages/Area/Show';
+
+// Importaciones de Computer
+import ComputerIndex from './pages/Computer/index';
+import ComputerCreate from './pages/Computer/Create';
+import ComputerEdit from './pages/Computer/Edit';
+import ComputerShow from './pages/Computer/Show';
+
+// Importaciones de Course
+import CourseIndex from './pages/Course/index';
+import CourseCreate from './pages/Course/Create';
+import CourseEdit from './pages/Course/Edit';
+import CourseShow from './pages/Course/Show';
+
+// Importaciones de Teacher
+import TeacherIndex from './pages/Teacher/index';
+import TeacherCreate from './pages/Teacher/Create';
+import TeacherEdit from './pages/Teacher/Edit';
+import TeacherShow from './pages/Teacher/Show';
+
+// Importaciones de TrainingCenter
+import TrainingCenterIndex from './pages/TrainingCenter/index';
+import TrainingCenterCreate from './pages/TrainingCenter/Create';
+import TrainingCenterEdit from './pages/TrainingCenter/Edit';
+import TrainingCenterShow from './pages/TrainingCenter/Show';
+
+export default function App() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Router>
+      <div className="min-vh-100 d-flex flex-column bg-light">
+        {/* Barra de navegación superior */}
+        <Navbar />
 
-      <div className="ticks"></div>
+        {/* Contenido principal */}
+        <div className="flex-grow-1 p-4">
+          <main className="container">
+            <Routes>
+              {/* Home */}
+              <Route path="/" element={<Home />} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+              {/* Módulo Apprentice (Aprendices) */}
+              <Route path="/apprentice" element={<ApprenticeIndex />} />
+              <Route path="/apprentice/create" element={<ApprenticeCreate />} />
+              <Route path="/apprentice/edit/:id" element={<ApprenticeEdit />} />
+              <Route path="/apprentice/show/:id" element={<ApprenticeShow />} />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+              {/* Módulo Area (Áreas) */}
+              <Route path="/area" element={<AreaIndex />} />
+              <Route path="/area/create" element={<AreaCreate />} />
+              <Route path="/area/edit/:id" element={<AreaEdit />} />
+              <Route path="/area/show/:id" element={<AreaShow />} />
+
+              {/* Módulo Computer (Computadores) */}
+              <Route path="/computer" element={<ComputerIndex />} />
+              <Route path="/computer/create" element={<ComputerCreate />} />
+              <Route path="/computer/edit/:id" element={<ComputerEdit />} />
+              <Route path="/computer/show/:id" element={<ComputerShow />} />
+
+              {/* Módulo Course (Cursos) */}
+              <Route path="/course" element={<CourseIndex />} />
+              <Route path="/course/create" element={<CourseCreate />} />
+              <Route path="/course/edit/:id" element={<CourseEdit />} />
+              <Route path="/course/show/:id" element={<CourseShow />} />
+
+              {/* Módulo Teacher (Instructores) */}
+              <Route path="/teacher" element={<TeacherIndex />} />
+              <Route path="/teacher/create" element={<TeacherCreate />} />
+              <Route path="/teacher/edit/:id" element={<TeacherEdit />} />
+              <Route path="/teacher/show/:id" element={<TeacherShow />} />
+
+              {/* Módulo TrainingCenter (Centros de Formación) */}
+              <Route path="/training-center" element={<TrainingCenterIndex />} />
+              <Route path="/training-center/create" element={<TrainingCenterCreate />} />
+              <Route path="/training-center/edit/:id" element={<TrainingCenterEdit />} />
+              <Route path="/training-center/show/:id" element={<TrainingCenterShow />} />
+            </Routes>
+          </main>
+        </div>
+
+        {/* Pie de página */}
+        <Footer />
+      </div>
+    </Router>
+  );
 }
-
-export default App
