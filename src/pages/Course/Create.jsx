@@ -9,22 +9,19 @@ export default function CourseCreate() {
         training_center_id: ''
     });
 
-    // Estados para simular las listas desplegables (áreas y centros de formación)
-    const [areas, setAreas] = useState([
-        { id: 1, name: 'Desarrollo de Software' },
-        { id: 2, name: 'Redes y Telecomunicaciones' }
-    ]);
-
-    const [trainingCenters, setTrainingCenters] = useState([
-        { id: 1, name: 'Centro de Teleinformática y Producción Industrial (CTPI)' }
-    ]);
+    const [areas, setAreas] = useState([]);
+    const [trainingCenters, setTrainingCenters] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Aquí luego puedes hacer peticiones GET a tu API para cargar dinámicamente las áreas y centros reales:
-        // axios.get('/api/areas').then(res => setAreas(res.data));
-        // axios.get('/api/training-centers').then(res => setTrainingCenters(res.data));
+        // Cargar las áreas y centros de formación reales creados en el localStorage
+        const savedAreas = JSON.parse(localStorage.getItem('areas_sena') || '[]');
+        const savedCenters = JSON.parse(localStorage.getItem('training_centers_sena') || '[]');
+
+        setAreas(savedAreas);
+        setTrainingCenters(savedCenters);
     }, []);
 
     const handleChange = (e) => {
@@ -36,11 +33,36 @@ export default function CourseCreate() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Aquí luego conectas tu lógica POST con la API
-        console.log("Enviando datos del curso:", formData);
+        setLoading(true);
 
-        // Redirigir al index de cursos al guardar
-        navigate('/course');
+        setTimeout(() => {
+            // Obtenemos los cursos actuales del localStorage
+            const existingCourses = JSON.parse(localStorage.getItem('courses_sena') || '[]');
+            
+            // Calculamos el ID secuencial (1, 2, 3...)
+            const nextId = existingCourses.length > 0 ? existingCourses[existingCourses.length - 1].id + 1 : 1;
+
+            // Buscamos los objetos completos de área y centro para guardarlos relacionados
+            const selectedArea = areas.find(a => a.id.toString() === formData.area_id.toString()) || { name: 'Sin área' };
+            const selectedCenter = trainingCenters.find(tc => tc.id.toString() === formData.training_center_id.toString()) || { name: 'Sin centro' };
+
+            // Creamos el nuevo registro de curso
+            const newCourse = {
+                id: nextId,
+                course_number: formData.course_number,
+                day: formData.day,
+                area: selectedArea,
+                training_center: selectedCenter
+            };
+
+            // Guardamos en el localStorage
+            existingCourses.push(newCourse);
+            localStorage.setItem('courses_sena', JSON.stringify(existingCourses));
+
+            alert('Curso guardado con éxito');
+            setLoading(false);
+            navigate('/course'); // Redirige a la lista de cursos
+        }, 300);
     };
 
     return (
@@ -73,9 +95,10 @@ export default function CourseCreate() {
                             <div className="mb-3">
                                 <label className="form-label fw-semibold">Dia:</label>
                                 <input
-                                    type="date"
+                                    type="text"
                                     name="day"
                                     className="form-control"
+                                    placeholder="Ej. Lunes o Lunes a Viernes"
                                     value={formData.day}
                                     onChange={handleChange}
                                     required
@@ -122,8 +145,12 @@ export default function CourseCreate() {
 
                             <div className="d-flex justify-content-end gap-2">
                                 <Link to="/course" className="btn btn-light px-4">Cancelar</Link>
-                                <button type="submit" className="btn btn-success px-4 fw-bold">
-                                    Enviar Formulario
+                                <button 
+                                    type="submit" 
+                                    className="btn btn-success px-4 fw-bold"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Guardando...' : 'Enviar Formulario'}
                                 </button>
                             </div>
 

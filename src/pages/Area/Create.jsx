@@ -1,132 +1,75 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function ApprenticeCreate() {
+export default function AreaCreate() {
     const navigate = useNavigate();
 
-    // Simulación de las colecciones $courses y $computers enviadas desde Laravel
-    const [courses] = useState([
-        { id: 1, course_number: '2670123 - ADSO' },
-        { id: 2, course_number: '2558941 - Gestión Empresarial' }
-    ]);
-
-    const [computers] = useState([
-        { id: 1, number: 'Equipo 01' },
-        { id: 2, number: 'Equipo 02' }
-    ]);
-
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        cell_number: '',
-        course_id: '',
-        computer_id: ''
+        name: ''
     });
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        alert('Formulario de aprendiz enviado correctamente');
-        navigate('/apprentice');
+        setLoading(true);
+
+        setTimeout(() => {
+            // Obtenemos las áreas actuales del localStorage
+            const existingAreas = JSON.parse(localStorage.getItem('areas_sena') || '[]');
+            
+            // Calculamos el ID secuencial: si ya hay áreas, toma el ID de la última y le suma 1, si no, empieza en 1.
+            const nextId = existingAreas.length > 0 ? existingAreas[existingAreas.length - 1].id + 1 : 1;
+
+            // Creamos el nuevo registro con el ID ordenado
+            const newArea = {
+                id: nextId,
+                name: formData.name
+            };
+
+            // Agregamos el nuevo registro al listado y lo guardamos
+            existingAreas.push(newArea);
+            localStorage.setItem('areas_sena', JSON.stringify(existingAreas));
+
+            alert('Guardado con éxito');
+            setLoading(false);
+            navigate('/area'); // Redirige a la lista
+        }, 300);
     };
 
     return (
-        <div className="container py-3">
-            <h1>Formulario Aprendices</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Nombre:
-                    <br />
+        <div className="container mt-4">
+            <h1 className="fw-bold mb-4">Formulario Área</h1>
+
+            <form onSubmit={handleSubmit} className="card p-4 shadow-sm">
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Name:</label>
                     <input
                         type="text"
                         name="name"
-                        className="form-control d-inline-block mt-1"
-                        style={{ maxWidth: '300px' }}
+                        className="form-control"
                         value={formData.name}
                         onChange={handleChange}
+                        placeholder="Ej. Desarrollo de Software"
                         required
                     />
-                </label>
-                <br />
-                <br />
+                </div>
 
-                <label>
-                    Email:
-                    <br />
-                    <input
-                        type="email"
-                        name="email"
-                        className="form-control d-inline-block mt-1"
-                        style={{ maxWidth: '300px' }}
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <br />
-                <br />
-
-                <label>
-                    Numero de telefono:
-                    <br />
-                    <input
-                        type="number"
-                        name="cell_number"
-                        className="form-control d-inline-block mt-1"
-                        style={{ maxWidth: '300px' }}
-                        value={formData.cell_number}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <br />
-                <br />
-
-                <label htmlFor="course_id">Curso: </label>
-                <select
-                    name="course_id"
-                    id="course_id"
-                    className="form-control d-inline-block mt-1"
-                    style={{ maxWidth: '300px' }}
-                    value={formData.course_id}
-                    onChange={handleChange}
-                    required
+                <button 
+                    type="submit" 
+                    className="btn text-white fw-bold"
+                    style={{ backgroundColor: '#16780c', borderColor: '#16780c' }}
+                    disabled={loading}
                 >
-                    <option value="">Selecione un curso</option>
-                    {courses.map((course) => (
-                        <option key={course.id} value={course.id}>
-                            {course.course_number}
-                        </option>
-                    ))}
-                </select>
-                <br />
-                <br />
-
-                <label htmlFor="computer_id">Equipo: </label>
-                <select
-                    name="computer_id"
-                    id="computer_id"
-                    className="form-control d-inline-block mt-1"
-                    style={{ maxWidth: '300px' }}
-                    value={formData.computer_id}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Selecione un equipo</option>
-                    {computers.map((computer) => (
-                        <option key={computer.id} value={computer.id}>
-                            {computer.number}
-                        </option>
-                    ))}
-                </select>
-                <br />
-                <br />
-
-                <button type="submit" className="btn btn-secondary">
-                    Enviar Formulario
+                    {loading ? 'Guardando...' : 'Enviar Formulario'}
                 </button>
             </form>
         </div>

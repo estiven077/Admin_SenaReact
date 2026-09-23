@@ -7,6 +7,7 @@ export default function ComputerCreate() {
         brand: ''
     });
 
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -18,11 +19,30 @@ export default function ComputerCreate() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Aquí luego conectas tu lógica con la API (Axios / Fetch)
-        console.log("Enviando datos:", formData);
+        setLoading(true);
 
-        // Redirigir al index de computadores al guardar
-        navigate('/computer');
+        setTimeout(() => {
+            // Obtenemos los computadores actuales del localStorage
+            const existingComputers = JSON.parse(localStorage.getItem('computers_sena') || '[]');
+            
+            // Calculamos el ID secuencial (1, 2, 3...)
+            const nextId = existingComputers.length > 0 ? existingComputers[existingComputers.length - 1].id + 1 : 1;
+
+            // Creamos el nuevo registro
+            const newComputer = {
+                id: nextId,
+                number: formData.number,
+                brand: formData.brand
+            };
+
+            // Guardamos en el localStorage
+            existingComputers.push(newComputer);
+            localStorage.setItem('computers_sena', JSON.stringify(existingComputers));
+
+            alert('Guardado con éxito');
+            setLoading(false);
+            navigate('/computer'); // Redirige al index de computadores
+        }, 300);
     };
 
     return (
@@ -66,8 +86,12 @@ export default function ComputerCreate() {
 
                             <div className="d-flex justify-content-end gap-2">
                                 <Link to="/computer" className="btn btn-light px-4">Cancelar</Link>
-                                <button type="submit" className="btn btn-success px-4 fw-bold">
-                                    Enviar Formulario
+                                <button 
+                                    type="submit" 
+                                    className="btn btn-success px-4 fw-bold"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Guardando...' : 'Enviar Formulario'}
                                 </button>
                             </div>
 

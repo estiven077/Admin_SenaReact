@@ -13,22 +13,24 @@ export default function TeacherCreate() {
         training_center_id: ''
     });
 
-    // Estados para simular las listas desplegables de áreas y centros de formación
-    const [areas, setAreas] = useState([
-        { id: 1, name: 'Análisis y Desarrollo de Software' },
-        { id: 2, name: 'Redes y Telecomunicaciones' }
-    ]);
-
-    const [trainingCenters, setTrainingCenters] = useState([
-        { id: 1, name: 'Centro de Teleinformática y Producción Industrial (CTPI)' }
-    ]);
+    const [areas, setAreas] = useState([]);
+    const [trainingCenters, setTrainingCenters] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Aquí luego puedes hacer peticiones GET a tu API para cargar las áreas y centros reales:
-        // axios.get('/api/areas').then(res => setAreas(res.data));
-        // axios.get('/api/training-centers').then(res => setTrainingCenters(res.data));
+        // Cargar las áreas y centros reales desde el localStorage (con respaldo por si acaso)
+        const savedAreas = JSON.parse(localStorage.getItem('areas_sena') || '[]');
+        const savedCenters = JSON.parse(localStorage.getItem('training_centers_sena') || '[]');
+
+        setAreas(savedAreas.length > 0 ? savedAreas : [
+            { id: 1, name: 'Análisis y Desarrollo de Software' },
+            { id: 2, name: 'Redes y Telecomunicaciones' }
+        ]);
+
+        setTrainingCenters(savedCenters.length > 0 ? savedCenters : [
+            { id: 1, name: 'Centro de Teleinformática y Producción Industrial (CTPI)' }
+        ]);
     }, []);
 
     const handleChange = (e) => {
@@ -40,15 +42,40 @@ export default function TeacherCreate() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Aquí luego conectas tu lógica POST con la API
-        console.log("Enviando datos del profesor:", formData);
 
-        // Redirigir al index de profesores al guardar
+        // 1. Obtener la lista actual de instructores del localStorage
+        const existingTeachers = JSON.parse(localStorage.getItem('teachers_sena') || '[]');
+
+        // 2. Calcular el siguiente ID de forma secuencial
+        const nextId = existingTeachers.length > 0 ? existingTeachers[existingTeachers.length - 1].id + 1 : 1;
+
+        // 3. Buscar los objetos completos de área y centro seleccionados para que se muestren bien en la tabla
+        const selectedArea = areas.find(a => a.id.toString() === formData.area_id.toString()) || { name: 'Sin área' };
+        const selectedCenter = trainingCenters.find(tc => tc.id.toString() === formData.training_center_id.toString()) || { name: 'Sin centro' };
+
+        // 4. Crear el nuevo objeto de instructor
+        const newTeacher = {
+            id: nextId,
+            name: formData.name,
+            email: formData.email,
+            age: formData.age,
+            phone: formData.phone,
+            profession: formData.profession,
+            biography: formData.biography,
+            area: selectedArea,
+            training_center: selectedCenter
+        };
+
+        // 5. Guardar en el localStorage
+        existingTeachers.push(newTeacher);
+        localStorage.setItem('teachers_sena', JSON.stringify(existingTeachers));
+
+        // 6. Redirigir al index de profesores
         navigate('/teacher');
     };
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-4 mb-5">
             <div className="row justify-content-center">
                 <div className="col-md-8">
                     <div className="card shadow-sm border-0 rounded-4 p-4">
@@ -141,6 +168,7 @@ export default function TeacherCreate() {
                                     className="form-control"
                                     value={formData.area_id}
                                     onChange={handleChange}
+                                    required
                                 >
                                     <option value="">Seleccione área</option>
                                     {areas.map((area) => (
@@ -159,6 +187,7 @@ export default function TeacherCreate() {
                                     className="form-control"
                                     value={formData.training_center_id}
                                     onChange={handleChange}
+                                    required
                                 >
                                     <option value="">Seleccione un centro de formación</option>
                                     {trainingCenters.map((tc) => (

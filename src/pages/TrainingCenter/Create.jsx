@@ -7,6 +7,7 @@ export default function TrainingCenterCreate() {
         location: ''
     });
 
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -18,11 +19,30 @@ export default function TrainingCenterCreate() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Aquí luego conectas tu lógica POST con la API
-        console.log("Enviando datos del centro de formación:", formData);
+        setLoading(true);
 
-        // Redirigir al index de centros de formación al guardar
-        navigate('/training-center');
+        setTimeout(() => {
+            // Obtenemos los centros de formación actuales del localStorage
+            const existingCenters = JSON.parse(localStorage.getItem('training_centers_sena') || '[]');
+            
+            // Calculamos el ID secuencial (1, 2, 3...)
+            const nextId = existingCenters.length > 0 ? existingCenters[existingCenters.length - 1].id + 1 : 1;
+
+            // Creamos el nuevo registro
+            const newCenter = {
+                id: nextId,
+                name: formData.name,
+                location: formData.location
+            };
+
+            // Guardamos en el localStorage
+            existingCenters.push(newCenter);
+            localStorage.setItem('training_centers_sena', JSON.stringify(existingCenters));
+
+            alert('Guardado con éxito');
+            setLoading(false);
+            navigate('/training-center'); // Redirige a la lista
+        }, 300);
     };
 
     return (
@@ -66,8 +86,12 @@ export default function TrainingCenterCreate() {
 
                             <div className="d-flex justify-content-end gap-2">
                                 <Link to="/training-center" className="btn btn-light px-4">Cancelar</Link>
-                                <button type="submit" className="btn btn-success px-4 fw-bold">
-                                    Enviar Formulario
+                                <button 
+                                    type="submit" 
+                                    className="btn btn-success px-4 fw-bold"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Guardando...' : 'Enviar Formulario'}
                                 </button>
                             </div>
 

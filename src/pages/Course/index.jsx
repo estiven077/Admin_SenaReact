@@ -2,21 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function CourseIndex() {
-    // Estado para simular la lista de cursos (luego lo cargas con tu API / BD)
-    const [courses, setCourses] = useState([
-        {
-            id: 1,
-            course_number: '2827481',
-            day: 'Lunes',
-            area: { name: 'Desarrollo de Software' },
-            training_center: { name: 'Centro de Teleinformática y Producción Industrial' }
-        }
-    ]);
+    const [courses, setCourses] = useState([]);
+
+    useEffect(() => {
+        // Carga los cursos guardados en el navegador
+        const savedCourses = JSON.parse(localStorage.getItem('courses_sena') || '[]');
+        setCourses(savedCourses);
+    }, []);
 
     const handleDelete = (id) => {
         if (window.confirm("¿Estás seguro de eliminar este curso?")) {
-            // Aquí luego harás tu petición DELETE a la API
-            setCourses(courses.filter(course => course.id !== id));
+            const updatedCourses = courses.filter(course => course.id !== id);
+            setCourses(updatedCourses);
+            localStorage.setItem('courses_sena', JSON.stringify(updatedCourses));
         }
     };
 
@@ -34,7 +32,7 @@ export default function CourseIndex() {
 
                 <div className="table-responsive">
                     <table id="idCourse" className="table table-striped table-bordered align-middle" style={{ width: '100%' }}>
-                        <thead className="table-dark">
+                        <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Course Number</th>
@@ -56,13 +54,13 @@ export default function CourseIndex() {
                                         <td>{course.training_center?.name}</td>
 
                                         <td>
-                                            <Link to={`/course/show/${course.id}`} className="btn btn-info btn-sm text-white">
+                                            <Link to={`/course/show/${course.id}`} className="btn btn-link p-0">
                                                 Mostrar
                                             </Link>
                                         </td>
 
                                         <td>
-                                            <Link to={`/course/edit/${course.id}`} className="btn btn-warning btn-sm">
+                                            <Link to={`/course/edit/${course.id}`} className="btn btn-link p-0">
                                                 Editar
                                             </Link>
                                         </td>
@@ -79,7 +77,7 @@ export default function CourseIndex() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="6" className="text-center">No hay cursos registrados.</td>
+                                    <td colSpan="8" className="text-center">No hay cursos registrados.</td>
                                 </tr>
                             )}
                         </tbody>

@@ -43,7 +43,7 @@ export default function Home() {
         }
       `}</style>
 
-            <div className="container-fluid px-4 py-3">
+            <div className="container-fluid px-0 py-3">
 
                 {/* Encabezado principal */}
                 <div className="text-center my-4">
@@ -204,7 +204,7 @@ export default function Home() {
                             </div>
                         </div>
 
-                        {/* Módulo 3 (Usando img3 temporalmente o la que prefieras) */}
+                        {/* Módulo 3 */}
                         <div className="col">
                             <div className="card h-100 shadow border-0 rounded-4 overflow-hidden hover-move">
                                 <img src={img3} className="card-img-top" alt="Instructores" style={{ height: '220px', objectFit: 'cover' }} />

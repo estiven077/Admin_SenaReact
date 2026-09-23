@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function AreaIndex() {
-    // Datos de prueba imitando la variable $areas de Blade
-    const [areas, setAreas] = useState([
-        { id: 1, name: 'Sistemas y Desarrollo de Software' },
-        { id: 2, name: 'Gestión Administrativa' },
-        { id: 3, name: 'Diseño e Innovación' }
-    ]);
+    const [areas, setAreas] = useState([]);
+
+    useEffect(() => {
+        // Carga las áreas guardadas en el navegador
+        const savedAreas = JSON.parse(localStorage.getItem('areas_sena') || '[]');
+        setAreas(savedAreas);
+    }, []);
 
     const handleDelete = (id) => {
         if (window.confirm('¿Seguro que deseas eliminar esta área?')) {
-            setAreas(areas.filter((area) => area.id !== id));
+            const updatedAreas = areas.filter((area) => area.id !== id);
+            setAreas(updatedAreas);
+            localStorage.setItem('areas_sena', JSON.stringify(updatedAreas));
         }
     };
 

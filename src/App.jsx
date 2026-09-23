@@ -47,8 +47,8 @@ export default function App() {
         <Navbar />
 
         {/* Contenido principal */}
-        <div className="flex-grow-1 p-4">
-          <main className="container">
+        <div className="flex-grow-1">
+          <main className="container-fluid px-0">
             <Routes>
               {/* Home */}
               <Route path="/" element={<Home />} />
